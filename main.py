@@ -30,6 +30,8 @@ def getSell(high):
 
     sell = max_high - unit
     sell_stop = sell + ATR
+
+    print "sell-1=%.3f sell_stop-1=%.3f" % (sell + (ATR / 2), sell_stop + (ATR / 2))
     print "sell0=%.3f sell_stop0=%.3f" % (sell, sell_stop)
     sell = appendSell(sell, unit, 1)
     sell = appendSell(sell, unit, 2)
@@ -48,6 +50,7 @@ def getBuy(low):
     unit = (ATR / 10)
     buy = min_low + unit
     buy_stop = buy - ATR
+    print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
     print "buy_0=%.3f buy__stop0=%.3f" % (buy, buy_stop)
     buy = appendBuy(buy, unit, 1)
     buy = appendBuy(buy, unit, 2)
