@@ -26,5 +26,14 @@ def readGodDatas():
     return high, low
 
 
+def getSell(high):
+    max_high = max(high)
+    print max_high
+
+
+def main():
+    high, low = readGodDatas()
+    getSell(high)
+
 if __name__ == '__main__':
-    print readGodDatas()
+    print main()
