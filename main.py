@@ -8,6 +8,8 @@ with open('config.ini', 'r') as cfg_file:
     ATR = float(config.get('config', 'ATR'))
     LONG_DAY = int(config.get('config', 'LONG_DAY'))
     SHORT_DAY = int(config.get('config', 'SHORT_DAY'))
+    SELL_AT = float(config.get('config', 'SELL_AT'))
+    SELL_AT1 = float(config.get('config', 'SELL_AT1'))
 
 
 def readGodDatas():
@@ -29,18 +31,26 @@ def getSell(high):
     unit = (ATR / 10)
 
     sell = max_high - unit
-    sell_stop = sell + ATR
+    sell_stop = max_high + ATR
+    if SELL_AT != 0:  # 如果已买了
+        if SELL_AT1 == 0:  # 追加还没有买
+            print "sell_at(-1)=%.3f sell_stop_at(-1)=%.3f" % (SELL_AT + (ATR / 2), SELL_AT + unit + ATR + (ATR / 2))
+        print "sell_at=%.3f sell_stop_at=%.3f" % (SELL_AT, SELL_AT + unit + ATR)
+        if SELL_AT1 == 0:  # 没有买2保时再追加
+            sell = appendSell(SELL_AT, unit, 1)
+            sell = appendSell(sell, unit, 2)
+            sell = appendSell(sell, unit, 3)
+    else:
+        print "sell0=%.3f sell_stop0=%.3f" % (sell, sell_stop)
 
-    print "sell-1=%.3f sell_stop-1=%.3f" % (sell + (ATR / 2), sell_stop + (ATR / 2))
-    print "sell0=%.3f sell_stop0=%.3f" % (sell, sell_stop)
-    sell = appendSell(sell, unit, 1)
-    sell = appendSell(sell, unit, 2)
-    sell = appendSell(sell, unit, 3)
+    # sell = appendSell(sell, unit, 1)
+    # sell = appendSell(sell, unit, 2)
+    # sell = appendSell(sell, unit, 3)
 
 
 def appendSell(value, unit, count):
     sell = value - unit
-    sell_stop = sell + ATR
+    sell_stop = value + ATR
     print "sell%s=%.3f sell_stop%s=%.3f" % (count, sell, count, sell_stop)
     return sell
 
@@ -49,12 +59,12 @@ def getBuy(low):
     min_low = min(low)
     unit = (ATR / 10)
     buy = min_low + unit
-    buy_stop = buy - ATR
-    print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
+    buy_stop = min_low - ATR
+    # print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
     print "buy_0=%.3f buy__stop0=%.3f" % (buy, buy_stop)
-    buy = appendBuy(buy, unit, 1)
-    buy = appendBuy(buy, unit, 2)
-    buy = appendBuy(buy, unit, 3)
+    # buy = appendBuy(buy, unit, 1)
+    # buy = appendBuy(buy, unit, 2)
+    # buy = appendBuy(buy, unit, 3)
 
 
 def appendBuy(value, unit, count):
