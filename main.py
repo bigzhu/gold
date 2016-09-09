@@ -26,16 +26,16 @@ def readGodDatas():
     return high, low
 
 
-def getSell(high):
-    max_high = max(high)
+def getSell(high, low):
     unit = (ATR / 10)
 
-    sell = max_high - unit
-    sl = max_high + ATR
+    sell = high - unit
+    sl = high + ATR
+    tp = low + unit
     if SELL_AT != 0:  # 如果已买了
         if SELL_AT1 == 0:  # 追加还没有买
             print "sell_at(-1)=%.3f S/L(-1)=%.3f" % (SELL_AT + (ATR / 2), SELL_AT + unit + ATR + (ATR / 2))
-        print "sell_at=%.3f S/L=%.3f" % (SELL_AT, SELL_AT + unit + ATR)
+        print "sell_at=%.3f S/L=%.3f T/P=%.3f"  % (SELL_AT, SELL_AT + unit + ATR, tp)
         if SELL_AT1 == 0:  # 没有买2保时再追加
             sell = appendSell(SELL_AT, unit, 1)
             sell = appendSell(sell, unit, 2)
@@ -76,7 +76,9 @@ def appendBuy(value, unit, count):
 
 def main():
     high, low = readGodDatas()
-    getSell(high)
+    high = max(high)
+    low = min(low)
+    getSell(high, low)
     print ''
     print ''
     getBuy(low)
