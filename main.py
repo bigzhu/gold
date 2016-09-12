@@ -28,6 +28,10 @@ def readGodDatas():
     return high, low
 
 
+def getSellTp(sell_at):
+    return sell_at - UNIT - ATR - (ATR / 2)
+
+
 def getSell(high, low):
 
     sell = high - UNIT
@@ -35,7 +39,7 @@ def getSell(high, low):
     if SELL_AT != 0:  # 买了
         if SELL_AT1 != 0:  # 买了追加
             sell_at1_sl = SELL_AT + UNIT + ATR + (ATR / 2)
-            sell_at1_tp = low + ATR
+            sell_at1_tp = getSellTp(SELL_AT1)
             print "sell_at(1)=%.3f S/L=%.3f T/P=%.3f" % (SELL_AT1, sell_at1_sl, sell_at1_tp)
             sell = appendSell(SELL_AT1, UNIT, 1)
             sell = appendSell(sell, UNIT, 2)
@@ -43,11 +47,11 @@ def getSell(high, low):
         else:  # 没追加
             sell1 = SELL_AT + (ATR / 2)
             sell1_sl = sell1 + UNIT + ATR + (ATR / 2)
-            sell1_tp = low + ATR
+            sell1_tp = getSellTp(sell1)
             print "sell(1)=%.3f S/L=%.3f T/P=%.3f" % (sell1, sell1_sl, sell1_tp)
 
         sell_at_sl = SELL_AT + UNIT + ATR
-        sell_at_tp = low + (ATR / 2)
+        sell_at_tp = getSellTp(SELL_AT)
         print "sell_at=%.3f S/L=%.3f T/P=%.3f" % (SELL_AT, sell_at_sl, sell_at_tp)
         if SELL_AT1 == 0:  # 没有买2保时再追加
             sell = appendSell(SELL_AT, UNIT, 1)
@@ -64,7 +68,9 @@ def getSell(high, low):
 def appendSell(value, UNIT, count):
     sell = value - UNIT
     sl = value + ATR
-    print "sell%s=%.3f S/L%s=%.3f" % (count, sell, count, sl)
+    tp = getSellTp(sell)
+
+    print "sell%s=%.3f S/L%s=%.3f T/P=%.3f" % (count, sell, count, sl, tp)
     return sell
 
 
