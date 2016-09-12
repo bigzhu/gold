@@ -31,11 +31,20 @@ def getSell(high, low):
 
     sell = high - unit
     sl = high + ATR
-    tp = low + unit
-    if SELL_AT != 0:  # 如果已买了
-        if SELL_AT1 == 0:  # 追加还没有买
-            print "sell_at(-1)=%.3f S/L(-1)=%.3f" % (SELL_AT + (ATR / 2), SELL_AT + unit + ATR + (ATR / 2))
-        print "sell_at=%.3f S/L=%.3f T/P=%.3f"  % (SELL_AT, SELL_AT + unit + ATR, tp)
+    if SELL_AT != 0:  # 买了
+        if SELL_AT1 != 0:  # 买了追加
+            sell_at1_sl = SELL_AT + unit + ATR + (ATR / 2)
+            sell_at1_tp = low + ATR
+            print "sell_at(1)=%.3f S/L=%.3f T/P=%.3f" % (SELL_AT1, sell_at1_sl, sell_at1_tp)
+        else: # 没追加
+            sell1 = SELL_AT + (ATR / 2)
+            sell1_sl = sell1 + unit + ATR + (ATR / 2)
+            sell1_tp = low + ATR
+            print "sell(1)=%.3f S/L=%.3f T/P=%.3f" % (sell1, sell1_sl, sell1_tp)
+
+        sell_at_sl = SELL_AT + unit + ATR
+        sell_at_tp = low + (ATR / 2)
+        print "sell_at=%.3f S/L=%.3f T/P=%.3f" % (SELL_AT, sell_at_sl, sell_at_tp)
         if SELL_AT1 == 0:  # 没有买2保时再追加
             sell = appendSell(SELL_AT, unit, 1)
             sell = appendSell(sell, unit, 2)
@@ -56,10 +65,9 @@ def appendSell(value, unit, count):
 
 
 def getBuy(low):
-    min_low = min(low)
     unit = (ATR / 10)
-    buy = min_low + unit
-    buy_stop = min_low - ATR
+    buy = low + unit
+    buy_stop = low - ATR
     # print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
     print "buy_0=%.3f buy__stop0=%.3f" % (buy, buy_stop)
     # buy = appendBuy(buy, unit, 1)
