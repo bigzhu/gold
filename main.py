@@ -37,6 +37,9 @@ def getSell(high, low):
             sell_at1_sl = SELL_AT + UNIT + ATR + (ATR / 2)
             sell_at1_tp = low + ATR
             print "sell_at(1)=%.3f S/L=%.3f T/P=%.3f" % (SELL_AT1, sell_at1_sl, sell_at1_tp)
+            sell = appendSell(SELL_AT1, UNIT, 1)
+            sell = appendSell(sell, UNIT, 2)
+            sell = appendSell(sell, UNIT, 3)
         else:  # 没追加
             sell1 = SELL_AT + (ATR / 2)
             sell1_sl = sell1 + UNIT + ATR + (ATR / 2)
