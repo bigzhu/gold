@@ -12,9 +12,10 @@ with open('config.ini', 'r') as cfg_file:
     SELL_AT1 = float(config.get('config', 'SELL_AT1'))
 
 UNIT = (ATR / 10)
+print 'UNIT=%.3f' % UNIT
 
 
-def readGodDatas():
+def readGodDatas(day_count):
     high = []
     low = []
     f = open(sys.path[0] + '/XAUUSD', 'r')
@@ -22,20 +23,28 @@ def readGodDatas():
         god_data = i.split('|')
         high.append(float(god_data[0]))
         low.append(float(god_data[1]))
-        if len(low) == int(LONG_DAY):  # 不取多过 LONG_DAY 的数
+        if len(low) == int(day_count):
             break
     f.close()
     return high, low
 
+high, low = readGodDatas(LONG_DAY)
+L_HIGH = max(high)
+L_LOW = min(low)
+high, low = readGodDatas(SHORT_DAY)
+S_HIGH = max(high)
+S_LOW = min(low)
+
 
 def getSellTp(sell_at):
-    return sell_at - UNIT - ATR - (ATR / 2)
+    # return sell_at - UNIT - ATR - (ATR / 2)
+    return sell_at - (ATR * 1.3)
 
 
-def getSell(high, low):
+def getSell():
 
-    sell = high - UNIT
-    sl = high + ATR
+    sell = L_HIGH - UNIT
+    sl = L_HIGH + ATR
     if SELL_AT != 0:  # 买了
         if SELL_AT1 != 0:  # 买了追加
             sell_at1_sl = SELL_AT + UNIT + ATR + (ATR / 2)
@@ -60,10 +69,6 @@ def getSell(high, low):
     else:
         print "sell0=%.3f S/L=%.3f" % (sell, sl)
 
-    # sell = appendSell(sell, UNIT, 1)
-    # sell = appendSell(sell, UNIT, 2)
-    # sell = appendSell(sell, UNIT, 3)
-
 
 def appendSell(value, UNIT, count):
     sell = value - UNIT
@@ -74,12 +79,12 @@ def appendSell(value, UNIT, count):
     return sell
 
 
-def getBuy(low):
+def getBuy():
     UNIT = (ATR / 10)
-    buy = low + UNIT
-    buy_stop = low - ATR
+    buy = L_LOW + UNIT
+    buy_stop = L_LOW - ATR
     # print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
-    print "buy_0=%.3f buy__stop0=%.3f" % (buy, buy_stop)
+    print "buy0=%.3f buy_stop0=%.3f" % (buy, buy_stop)
     # buy = appendBuy(buy, UNIT, 1)
     # buy = appendBuy(buy, UNIT, 2)
     # buy = appendBuy(buy, UNIT, 3)
@@ -93,15 +98,9 @@ def appendBuy(value, UNIT, count):
 
 
 def main():
-    print 'UNIT=%.3f' % UNIT
-    high, low = readGodDatas()
-    high = max(high)
-    low = min(low)
-
-    getSell(high, low)
+    getSell()
     print ''
-    print ''
-    getBuy(low)
+    getBuy()
 
 if __name__ == '__main__':
     main()
