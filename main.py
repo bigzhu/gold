@@ -12,6 +12,7 @@ with open('config.ini', 'r') as cfg_file:
     SELL_AT1 = float(config.get('config', 'SELL_AT1'))
 
 UNIT = (ATR / 10)
+FLUC = (ATR / 4)  # 购买浮动
 print 'UNIT=%.3f' % UNIT
 
 
@@ -42,8 +43,7 @@ def getSellTp(sell_at):
 
 
 def getSell():
-
-    sell = L_HIGH - UNIT
+    sell = L_HIGH - FLUC
     sl = L_HIGH + ATR
     if SELL_AT != 0:  # 买了
         if SELL_AT1 != 0:  # 买了追加
@@ -80,8 +80,7 @@ def appendSell(value, UNIT, count):
 
 
 def getBuy():
-    UNIT = (ATR / 10)
-    buy = L_LOW + UNIT
+    buy = L_LOW + FLUC
     buy_stop = L_LOW - ATR
     # print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
     print "buy0=%.3f buy_stop0=%.3f" % (buy, buy_stop)
