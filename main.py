@@ -30,6 +30,8 @@ with open('config.ini', 'r') as cfg_file:
     BUY_AT3 = float(config.get('config', 'BUY_AT3'))
     BUY_AT4 = float(config.get('config', 'BUY_AT4'))
 
+    NOW = float(config.get('config', 'NOW'))
+
 UNIT = (ATR / 10)
 FLUC = (ATR / 4)  # 购买浮动
 print 'UNIT=%.3f' % UNIT
@@ -94,7 +96,7 @@ def appendSell(last_sell_at):
 
 
 def printSell(name, sell_at):
-    print "%s=%.3f S/L=%.3f T/P=%.3f" % (name, sell_at, getSellSL(sell_at), getSellTP(sell_at))
+    print "%s=%.3f S/L=%.3f T/P=%.3f keep=%.3f" % (name, sell_at, getSellSL(sell_at), getSellTP(sell_at), calculateKeep(None, sell_at))
 
 
 def sell():
@@ -137,10 +139,6 @@ def sell():
 def getBuyAt():
     buy_at = L_LOW + FLUC
     return buy_at
-    # print "buy0=%.3f buy_stop0=%.3f" % (buy, buy_stop)
-    # buy = appendBuy(buy, UNIT, 1)
-    # buy = appendBuy(buy, UNIT, 2)
-    # buy = appendBuy(buy, UNIT, 3)
 
 
 def getBuySL(buy_at):
@@ -158,7 +156,28 @@ def getBuyTP(buy_at):
 
 
 def printBuy(name, buy_at):
-    print "%s=%.3f S/L=%.3f T/P=%.3f" % (name, buy_at, getBuySL(buy_at), getBuyTP(buy_at))
+    print "%s=%.3f S/L=%.3f T/P=%.3f keep=%.3f" % (name, buy_at, getBuySL(buy_at), getBuyTP(buy_at), calculateKeep(None, buy_at))
+
+
+def calculateKeep(sell_at=None, buy_at=None):
+    '''
+    计算持有
+    '''
+    if sell_at:
+        if sell_at < NOW:
+            return 0
+        keep_at = sell_at
+        while keep_at > NOW:
+            keep_at -= ATR / 2
+        return keep_at + ATR / 2
+
+    if buy_at:
+        if buy_at > NOW:
+            return 0
+        keep_at = buy_at
+        while keep_at > NOW:
+            keep_at += ATR / 2
+        return keep_at - ATR / 2
 
 
 def getBuySave(buy_at):
