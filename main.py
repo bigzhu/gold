@@ -23,6 +23,12 @@ with open('config.ini', 'r') as cfg_file:
     SELL_AT2 = float(config.get('config', 'SELL_AT2'))
     SELL_AT3 = float(config.get('config', 'SELL_AT3'))
     SELL_AT4 = float(config.get('config', 'SELL_AT4'))
+    BUY_SAVE_AT = float(config.get('config', 'BUY_SAVE_AT'))
+    BUY_AT = float(config.get('config', 'BUY_AT'))
+    BUY_AT1 = float(config.get('config', 'BUY_AT1'))
+    BUY_AT2 = float(config.get('config', 'BUY_AT2'))
+    BUY_AT3 = float(config.get('config', 'BUY_AT3'))
+    BUY_AT4 = float(config.get('config', 'BUY_AT4'))
 
 UNIT = (ATR / 10)
 FLUC = (ATR / 4)  # 购买浮动
@@ -128,27 +134,88 @@ def sell():
     printSell('sell_at4', sell_at4)
 
 
-def getBuy():
-    buy = L_LOW + FLUC
-    buy_stop = L_LOW - ATR
-    # print "buy_-1=%.3f buy__stop-1=%.3f" % (buy - (ATR / 2), buy_stop - (ATR / 2))
-    print "buy0=%.3f buy_stop0=%.3f" % (buy, buy_stop)
+def getBuyAt():
+    buy_at = L_LOW + FLUC
+    return buy_at
+    # print "buy0=%.3f buy_stop0=%.3f" % (buy, buy_stop)
     # buy = appendBuy(buy, UNIT, 1)
     # buy = appendBuy(buy, UNIT, 2)
     # buy = appendBuy(buy, UNIT, 3)
 
 
-def appendBuy(value, UNIT, count):
-    buy = value + UNIT
-    buy_stop = buy - ATR
-    print "buy_%s=%.3f buy__stop%s=%.3f" % (count, buy, count, buy_stop)
-    return buy
+def getBuySL(buy_at):
+    '''
+    止损(S/L): - UNIT - ATR - (ATR / 2)
+    '''
+    return buy_at - UNIT - ATR - (ATR / 2)
+
+
+def getBuyTP(buy_at):
+    '''
+    止盈(T/P): 2*ATR
+    '''
+    return buy_at + (2 * ATR)
+
+
+def printBuy(name, buy_at):
+    print "%s=%.3f S/L=%.3f T/P=%.3f" % (name, buy_at, getBuySL(buy_at), getBuyTP(buy_at))
+
+
+def getBuySave(buy_at):
+    '''
+    救: +(ATR/2)
+    '''
+    return buy_at - (ATR / 2)
+
+
+def appendBuy(last_buy_at):
+    '''
+    追加: - UNIT 4-5 个
+    '''
+    return last_buy_at + UNIT
+
+
+def buy():
+    buy_at = getBuyAt()
+    if BUY_AT != 0:  # 买了
+        buy_at = BUY_AT
+    else:
+        buy_at = getBuyAt()
+    if BUY_SAVE_AT != 0:  # 买了抄底
+        buy_at_save = BUY_SAVE_AT
+    else:
+        buy_at_save = getBuySave(buy_at)
+    printBuy('buy_at_save', buy_at_save)
+    printBuy('buy_at', buy_at)
+    if BUY_AT1 != 0:
+        buy_at1 = BUY_AT1
+    else:
+        buy_at1 = appendBuy(buy_at)
+    printBuy('buy_at1', buy_at1)
+
+    if BUY_AT2 != 0:
+        buy_at2 = BUY_AT2
+    else:
+        buy_at2 = appendBuy(buy_at1)
+    printBuy('buy_at2', buy_at2)
+
+    if BUY_AT3 != 0:
+        buy_at3 = BUY_AT3
+    else:
+        buy_at3 = appendBuy(buy_at2)
+    printBuy('buy_at3', buy_at3)
+
+    if BUY_AT4 != 0:
+        buy_at4 = BUY_AT4
+    else:
+        buy_at4 = appendBuy(buy_at3)
+    printBuy('buy_at4', buy_at4)
 
 
 def main():
     sell()
     print ''
-    getBuy()
+    buy()
 
 if __name__ == '__main__':
     main()
