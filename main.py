@@ -34,7 +34,7 @@ with open('config.ini', 'r') as cfg_file:
 
 UNIT = (ATR / 10)
 FLUC = (ATR / 4)  # 购买浮动
-print 'UNIT=%.3f' % UNIT
+print 'UNIT=%.2f' % UNIT
 
 
 def readGodDatas(day_count):
@@ -96,7 +96,7 @@ def appendSell(last_sell_at):
 
 
 def printSell(name, sell_at):
-    print "%s=%.3f S/L=%.3f T/P=%.3f keep=%.3f" % (name, sell_at, getSellSL(sell_at), getSellTP(sell_at), calculateKeep(None, sell_at))
+    print "%s=%.2f S/L=%.2f T/P=%.2f keep=%.2f" % (name, sell_at, getSellSL(sell_at), getSellTP(sell_at), calculateKeep(None, sell_at))
 
 
 def sell():
@@ -156,7 +156,7 @@ def getBuyTP(buy_at):
 
 
 def printBuy(name, buy_at):
-    print "%s=%.3f S/L=%.3f T/P=%.3f keep=%.3f" % (name, buy_at, getBuySL(buy_at), getBuyTP(buy_at), calculateKeep(None, buy_at))
+    print "%s=%.2f S/L=%.2f T/P=%.2f keep=%.2f" % (name, buy_at, getBuySL(buy_at), getBuyTP(buy_at), calculateKeep(None, buy_at))
 
 
 def calculateKeep(sell_at=None, buy_at=None):
