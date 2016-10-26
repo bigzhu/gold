@@ -15,8 +15,8 @@ config = ConfigParser.ConfigParser()
 with open('config.ini', 'r') as cfg_file:
     config.readfp(cfg_file)
     ATR = float(config.get('config', 'ATR'))
-    LONG_DAY = int(config.get('config', 'LONG_DAY'))
-    SHORT_DAY = int(config.get('config', 'SHORT_DAY'))
+    # LONG_DAY = int(config.get('config', 'LONG_DAY'))
+    # SHORT_DAY = int(config.get('config', 'SHORT_DAY'))
     SELL_SAVE_AT = float(config.get('config', 'SELL_SAVE_AT'))
     SELL_AT = float(config.get('config', 'SELL_AT'))
     SELL_AT1 = float(config.get('config', 'SELL_AT1'))
@@ -31,10 +31,10 @@ with open('config.ini', 'r') as cfg_file:
     BUY_AT4 = float(config.get('config', 'BUY_AT4'))
 
     NOW = float(config.get('config', 'NOW'))
-
 UNIT = (ATR / 10)
 FLUC = (ATR / 4)  # 购买浮动
-print 'UNIT=%.2f' % UNIT
+L_HIGH = 0
+L_LOW = 0
 
 
 def readGodDatas(day_count):
@@ -50,13 +50,6 @@ def readGodDatas(day_count):
     f.close()
     return high, low
 
-high, low = readGodDatas(LONG_DAY)
-L_HIGH = max(high)
-L_LOW = min(low)
-high, low = readGodDatas(SHORT_DAY)
-S_HIGH = max(high)
-S_LOW = min(low)
-
 
 def getSellAt():
     '''
@@ -66,11 +59,11 @@ def getSellAt():
     return sell_at
 
 
-def getSellTP(sell_at):
+def getSellTP():
     '''
-    止盈(T/P): 2*ATR
+    止盈(T/P):
     '''
-    return sell_at - (2 * ATR)
+    return getBuyAt() + (ATR / 2)
 
 
 def getSellSave(sell_at):
@@ -96,7 +89,7 @@ def appendSell(last_sell_at):
 
 
 def printSell(name, sell_at):
-    print "%s=%.2f S/L=%.2f T/P=%.2f keep=%.2f" % (name, sell_at, getSellSL(sell_at), getSellTP(sell_at), calculateKeep(None, sell_at))
+    print "%s=%.2f S/L=%.2f T/P=%.2f keep=%.2f" % (name, sell_at, getSellSL(sell_at), getSellTP(), calculateKeep(None, sell_at))
 
 
 def sell():
@@ -231,10 +224,18 @@ def buy():
     printBuy('buy_at4', buy_at4)
 
 
-def main():
+def main(day_count):
+    high, low = readGodDatas(day_count)
+    global L_HIGH
+    global L_LOW
+    L_HIGH = max(high)
+    L_LOW = min(low)
+    print 'L_HIGH', L_HIGH
+    print 'L_LOW', L_LOW
     sell()
     print ''
     buy()
 
 if __name__ == '__main__':
-    main()
+    day_count = int(input('Enter the days: '))
+    main(day_count)
