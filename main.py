@@ -63,7 +63,7 @@ def getSellTP():
     '''
     止盈(T/P):
     '''
-    return getBuyAt() + (ATR / 2)
+    return L_LOW + (ATR / 2)
 
 
 def getSellSave(sell_at):
@@ -84,8 +84,7 @@ def appendSell(last_sell_at):
     '''
     追加: - UNIT 4-5 个
     '''
-    sell = last_sell_at - UNIT
-    return sell
+    return last_sell_at - (ATR / 4)
 
 
 def printSell(name, sell_at):
@@ -168,7 +167,7 @@ def calculateKeep(sell_at=None, buy_at=None):
         if buy_at > NOW:
             return 0
         keep_at = buy_at
-        while keep_at > NOW:
+        while keep_at < NOW:
             keep_at += ATR / 2
         return keep_at - ATR / 2
 
@@ -182,9 +181,9 @@ def getBuySave(buy_at):
 
 def appendBuy(last_buy_at):
     '''
-    追加: - UNIT 4-5 个
+    追加
     '''
-    return last_buy_at + UNIT
+    return last_buy_at + (ATR / 4)
 
 
 def buy():
@@ -237,5 +236,10 @@ def main(day_count):
     buy()
 
 if __name__ == '__main__':
-    day_count = int(input('Enter the days: '))
+    args = sys.argv
+    if(len(args) == 1):
+        print '请输入采样天数'
+        exit()
+    elif(len(args) == 2):
+        day_count = args[1]
     main(day_count)
