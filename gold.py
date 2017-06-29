@@ -8,9 +8,9 @@ def getType():
     '''
     取趋势
     '''
-    type = input("趋势6, 半趋势4, 无2: ")
-    if type not in [6, 4, 2]:
-        print('请输入6 4 2 之一!')
+    type = input("趋势6, 半趋势4, 无2, 逆半趋势0, 逆趋势-2: ")
+    if type not in [6, 4, 2, 0, -2]:
+        print('请输入6 4 2 0 -2 之一!')
         return getType()
     return type
 
