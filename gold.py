@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numbers
+import time_bz
 
 
 def getType():
@@ -34,19 +35,33 @@ def getMaxValue():
         print('请输入正确的数字!')
         return getMaxValue()
     return max
-if __name__ == '__main__':
+
+
+def write(content):
+    print content
+    file_name = __file__.split('.')[0] + time_bz.getYearMonthDay()
+    the_file = open(file_name, 'a')
+    the_file.write(content + '\n')
+
+
+def main():
     type = getType()
     oper = getOper()
     max = getMaxValue()
     if oper == 'buy':
         key = max - type + 0.1
-        stop = key - 10
-        print('buy 0.2 at %s, %s' % (key, stop))
-        print('buy 0.4 at %s, %s' % (key - 2, stop))
-        print('buy 0.6 at %s, %s' % (key - 6, stop))
+        stop = key - 12
+
+        write('stop at %s, throw at %s' % (stop, stop + 20))
+        write('buy 0.2 at %s' % key)
+        write('buy 0.4 at %s' % (key - 4))
+        write('buy 0.6 at %s' % (key - 8))
     if oper == 'sell':
         key = max + type - 0.1
-        stop = key + 10
-        print('sell 0.2 at %s, %s' % (key, stop))
-        print('sell 0.4 at %s, %s' % (key + 2, stop))
-        print('sell 0.6 at %s, %s' % (key + 6, stop))
+        stop = key + 12
+        write('stop at %s, throw at %s' % (stop, stop - 20))
+        write('sell 0.2 at %s' % key)
+        write('sell 0.4 at %s' % (key + 4))
+        write('sell 0.6 at %s' % (key + 8))
+if __name__ == '__main__':
+    main()
