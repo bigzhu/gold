@@ -1,70 +1,67 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import numbers
-import time_bz
-
-
-def getType():
-    '''
-    取趋势
-    '''
-    type = input("趋势6, 半趋势4, 无2, 逆半趋势0, 逆趋势-2: ")
-    if type not in [6, 4, 2, 0, -2]:
-        print('请输入6 4 2 0 -2 之一!')
-        return getType()
-    return type
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+top = int(float(config.get('config', 'top')) * 1000)
 
 
 def getOper():
     '''
     取类型
     '''
-    oper = raw_input("buy or sell: ")
+    oper = input("buy or sell: ")
     if oper not in ['buy', 'sell']:
         print('请输入buy sell 之一!')
         return getOper()
     return oper
 
 
-def getMaxValue():
-    '''
-    '''
-    max = input("max: ")
-    if not isinstance(max, numbers.Real):
+def getAtr():
+    atr = input("昨天 ATR:")
+    try:
+        atr = int(float(atr) * 1000)
+    except ValueError:
         print('请输入正确的数字!')
-        return getMaxValue()
-    return max
+        return getAtr()
+    return atr
 
 
-def write(content):
-    print content
-    # file_name = __file__.split('.')[0] + time_bz.getYearMonthDay()
-    file_name = time_bz.getYearMonthDay()
-    the_file = open(file_name, 'a')
-    the_file.write(content + '\n')
+def getTop():
+    top = input("近4天峰值:")
+    try:
+        top = int(float(top) * 1000)
+    except ValueError:
+        print('请输入正确的数字!')
+        return getTop()
+    return top
 
 
 def main():
-    type = getType()
     oper = getOper()
-    max = getMaxValue()
-    if oper == 'buy':
-        key = max - type + 0.1
-        stop = key - 12
+    atr = getAtr()
+    # top = getTop()
+    print('近4天峰值: %s' % (top / 1000))
+    one_quarter = atr / 4
+    print('购买间隔: %s' % (one_quarter / 1000))
 
-        write('stop at %s, throw at %s' % (stop, stop + 20))
-        write('buy 0.1 at %s' % (key + 4))
-        write('buy 0.2 at %s' % key)
-        write('buy 0.4 at %s' % (key - 4))
-        write('buy 0.6 at %s' % (key - 8))
-    if oper == 'sell':
-        key = max + type - 0.1
-        stop = key + 12
-        write('stop at %s, throw at %s' % (stop, stop - 20))
-        write('sell 0.1 at %s' % (key - 4))
-        write('sell 0.2 at %s' % key)
-        write('sell 0.4 at %s' % (key + 4))
-        write('sell 0.6 at %s' % (key + 8))
+    two_atr = 2 * atr
+    if oper == 'buy':
+        reverse = top - two_atr
+    else:
+        reverse = top + two_atr
+    print('-------------------------------------------------------')
+    print('保底: %s' % (reverse / 1000))
+    tmp = top
+    for i in range(1, 10):
+        if oper == 'buy':
+            tmp = tmp - one_quarter
+        else:
+            tmp = tmp + one_quarter
+        print(tmp / 1000)
+
+
 if __name__ == '__main__':
     main()
+    import doctest
+    doctest.testmod(verbose=False, optionflags=doctest.ELLIPSIS)
