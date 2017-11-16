@@ -3,7 +3,7 @@
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
-top = int(float(config.get('config', 'top')) * 1000)
+top = int(float(config.get('gold', 'top')) * 1000)
 
 
 def getOper():
@@ -63,5 +63,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-    import doctest
-    doctest.testmod(verbose=False, optionflags=doctest.ELLIPSIS)
+    #import doctest
+    #doctest.testmod(verbose=False, optionflags=doctest.ELLIPSIS)
