@@ -18,7 +18,7 @@ def getOper():
 
 
 def getAtr():
-    atr = input("昨天 ATR:")
+    atr = input("当天12点 ATR:")
     try:
         atr = int(float(atr) * 1000)
     except ValueError:
@@ -50,10 +50,10 @@ def main():
         reverse = top - two_atr
     else:
         reverse = top + two_atr
-    print('-------------------------------------------------------')
     print('保底: %s' % (reverse / 1000))
+    print('-------------------------------------------------------')
     tmp = top
-    for i in range(1, 10):
+    for i in range(1, 14):
         if oper == 'buy':
             tmp = tmp - one_quarter
         else:
